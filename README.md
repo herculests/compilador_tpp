@@ -1,7 +1,7 @@
 
 <h1 align="center">
   <br>
-  <img src="https://moodle.utfpr.edu.br/pluginfile.php/106721/course/section/311116/919FLyAeLOL.png" alt="Markdownify" width="200">
+  <img src="https://i.imgur.com/yMdJFrT.png" alt="Markdownify" width="200">
   <br>
   Markdownify
   <br>
