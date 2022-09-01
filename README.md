@@ -9,25 +9,37 @@
 
 <h4 align="center">Projeto de Implementação de um Compilador para a Linguagem TPP</h4>
 
-## Key Features
+## Análise Léxica (Trabalho – 1ª parte)
 
-* LivePreview - Make changes, See changes
-  - Instantly see what your Markdown documents look like in HTML as you create them.
-* Sync Scrolling
-  - While you type, LivePreview will automatically scroll to the current location you're editing.
-* GitHub Flavored Markdown  
-* Syntax highlighting
-* [KaTeX](https://khan.github.io/KaTeX/) Support
-* Dark/Light mode
-* Toolbar for basic Markdown formatting
-* Supports multiple cursors
-* Save the Markdown preview as PDF
-* Emoji support in preview :tada:
-* App will keep alive in tray for quick usage
-* Full screen mode
-  - Write distraction free.
-* Cross platform
-  - Windows, macOS and Linux ready.
+A Análise Léxica é a fase do compilador que lê o código-fonte do arquivo de entrada como um fluxo de caracteres, e nesse processo de varredura reconhece os tokens ou marcas da linguagem. As denominações Sistema de Varredura, Analisador Léxico e Scanner são equivalentes.
+Devem ser reconhecidas as marcas presentes na linguagem TPP, como se, repita e outras que são palavras chave, palavras reservadas. Precisam ser reconhecidos os nomes de variáveis e funções que são os identificadores, símbolos e operadores aritméticos, lógicos e relacionais.
+O processo de reconhecimento das marcas, a identificação de padrões pode ser feito de duas formas: utilizando-se expressões regulares ou implementando o analisador com autômatos finitos.
+
+<div align="center">
+	
+|palavras reservadas | símbolos|
+|--------------------|---------|
+|se | + soma|
+|então | - subtração|
+|senão | * multiplicação|
+|fim | / divisão|
+|repita | = igualdade|
+|flutuante | , vírgula|
+|retorna | := atribuição|
+|até | < menor|
+|leia | > maior|
+|escreva | <= menor-igual|
+|inteiro | >= maior-igual|
+| | ( abre-par|
+| | ( fecha-par|
+| | : dois-pontos|
+| | [ abre-col|
+| | ] fecha-col|
+| | && e-logico|
+| | \|\| ou-logico|
+| | ! negação|
+	
+</div>
 
 ## How To Use
 
