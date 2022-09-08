@@ -1,5 +1,5 @@
 <h4 align="center">Departamento Academido de Computação - Universidade Tecnológica Federal do Paraná (UTFPR)</h4>
-<h5 align="center">Campo Mourao – PR – Brasil</h5>
+<h5 align="center">Campo Mourão – PR – Brasil</h5>
 <div align="center">henriquesantos@alunos.utfpr.edu.br</div>
 
 <h1 align="center">
@@ -106,11 +106,11 @@ A biblioteca PLY possui um procedimento específico quando se trata de reconhece
 Na figura 4 e 5 são mostrados alguns exemplos de entradas de texto na linguagem T++ e seus respectivos resultados após analise léxica aplicada na entrada.
  
  <div align="center">
-<img src="https://i.imgur.com/nq9QS4o.png" alt="Markdownify" width="300">
+<img src="https://i.imgur.com/nq9QS4o.png" alt="Markdownify" width="500">
 </div>
 <h5 align="center"> Figura 4. Exemplo simples de entrada e sa´ıda (I)</h5>
 
 <div align="center">
-<img src="https://i.imgur.com/QMBAHDw.png" alt="Markdownify" width="300">
+<img src="https://i.imgur.com/QMBAHDw.png" alt="Markdownify" width="500">
 </div>
 <h5 align="center"> Figura 5. Exemplo simples de entrada e sa´ıda (II)</h5>
