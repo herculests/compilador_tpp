@@ -66,7 +66,9 @@ Um automato finito é composto por um conjunto de estados, um conjunto de símbo
 
 O estado inicial do automato é marcado com um triangulo na lateral esquerda,  os possíveis estados finais são denotados com um círculo na sua borda, além de seu rótolo que identifica o estado. As transições são identificadas pelos símbolos ou classe de símbolos (ex: letra) que possibilitam a troca de estados no automato, como pode ser visto na figura 1.
 
-<img src="https://i.imgur.com/qaagE7a.png" alt="Markdownify" width="600">
+<div align="center">
+<img src="https://i.imgur.com/qaagE7a.png" alt="Markdownify" width="500">
+</div>
 <h5 align="center"> Figura 1. Exemplo de automato que representa formalmente a identificação da linguagem responsavel por ”reconhecer” um número de ponto flutuante</h5>
 
 Os autômatos têm uma forte ligação com as expressões regulares empregadas a cada tipo de lexema encontrado no código. As expressões regulares serão explicadas e exemplificadas na seção 4, onde serão abordados também assuntos com relação à aplicação dos autômatos e expressões regulares no reconhecimento desses lexemas.
@@ -85,14 +87,30 @@ O texto é analisado pela biblioteca token por token até que a entrada de texto
 
 As expressões regulares têm o propósito de identificar padrões textuais a partir de uma entrada, sendo assim possíveis identificar textos e símbolos que seriam muito difíceis de serem identificados com a leitura humana do texto ou que demandaria muito tempo para que isso ocorresse.
 
-<img  align="center" src="https://i.imgur.com/JNvJ1nU.png" alt="Markdownify" width="600">
+<div align="center">
+<img src="https://i.imgur.com/JNvJ1nU.png" alt="Markdownify" width="600">
+</div>
 <h5 align="center"> Figura 2. Exemplo de expressao regular que identifica um ponto flutuante no texto de entrada</h5>
 
 #### 4.2. PLY
 
-A biblioteca PLY possui um procedimento específico quando se trata de reconhecer tokens de um texto, é necessário definir o token em uma lista e definir uma variável ou função com o nome do token e um prefixo t que definem a expressão regular desse token, como na figura 4.
+A biblioteca PLY possui um procedimento específico quando se trata de reconhecer tokens de um texto, é necessário definir o token em uma lista e definir uma variável ou função com o nome do token e um prefixo t_ que definem a expressão regular desse token, como na figura 4.
+
+<div align="center">
+<img src="https://i.imgur.com/2OCFVfg.png" alt="Markdownify" width="300">
+</div>
+<h5 align="center"> Figura 3. Sintaxe de decaração usada na biblioteca PLY</h5>
 
 ### 5. Exemplos
 
-Na figura 5 e 6 são mostrados alguns exemplos de entradas de texto na linguagem T++ e seus respectivos resultados após analise léxica aplicada na entrada.
+Na figura 4 e 5 são mostrados alguns exemplos de entradas de texto na linguagem T++ e seus respectivos resultados após analise léxica aplicada na entrada.
  
+ <div align="center">
+<img src="https://i.imgur.com/nq9QS4o.png" alt="Markdownify" width="300">
+</div>
+<h5 align="center"> Figura 4. Exemplo simples de entrada e sa´ıda (I)</h5>
+
+<div align="center">
+<img src="https://i.imgur.com/QMBAHDw.png" alt="Markdownify" width="300">
+</div>
+<h5 align="center"> Figura 5. Exemplo simples de entrada e sa´ıda (II)</h5>
