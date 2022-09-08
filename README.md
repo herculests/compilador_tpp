@@ -11,110 +11,88 @@
 </h1>
 
 <h4 align="center">Projeto de Implementação de um Compilador para a Linguagem TPP</h4>
-Título de nível 2
-------------------
 
+## Análise Léxica
 
-## Análise Léxica (Trabalho – 1ª parte)
+### 1. Introducção
 
-A Análise Léxica é a fase do compilador que lê o código-fonte do arquivo de entrada como um fluxo de caracteres, e nesse processo de varredura reconhece os tokens ou marcas da linguagem. As denominações Sistema de Varredura, Analisador Léxico e Scanner são equivalentes.
-Devem ser reconhecidas as marcas presentes na linguagem TPP, como se, repita e outras que são palavras chave, palavras reservadas. Precisam ser reconhecidos os nomes de variáveis e funções que são os identificadores, símbolos e operadores aritméticos, lógicos e relacionais.
-O processo de reconhecimento das marcas, a identificação de padrões pode ser feito de duas formas: utilizando-se expressões regulares ou implementando o analisador com autômatos finitos.
+A análise léxica é a primeira etapa do processo de compilação de um código-fonte, nessa fase do processo o código é examinado e apartir disso são gerados tokens que representam cada lexema presente no ”texto”. Os tokens são definidos pela linguagem e fazem parte do modo de escrever empregado na mesma.
+
+A linguagem que serviu de base para esse trabalho é a T++.
+
+Este relatório está particionado em 4 seções que demonstram o funcionamento e a implementação do programa responsável por identificar os tokens a partir dos lexemas de entrada que identificam um código escrito na linguagem T++. Na seção 2 sera apresentada a especificação da linguagem, bem como os itens que definem toda a sua estrutura léxica, a seção 3 mostra a representação de cada lexema reconhecido pela linguagem por um dispositivo formal (DFA). A implementação bem como a biblioteca usada para esse projeto serão abordados na seção 4, além de exemplos de entrada e seus respectivos resultados na seção 5.
+
+### 2. Especificação da Linguagem 
+
+A linguagem descrita neste relatório é a  T++. A linguagem consegue reconhecer cerca de 35 tipos diferentes de lexemas, incluindo palavras reservadas. A linguagem pode ”reconhecer” desde nomes de variáveis  e funções, chamados de  identificadores, até números em diferentes notações e símbolos comuns em linguagens de programação, os tipos de tokens reconhecidos pela linguagem podem ser vistos na tabela 1.
 
 <div align="center">
 	
-|palavras reservadas | símbolos|
+|lexemas | tokens|
 |--------------------|---------|
-|se | + soma|
-|então | - subtração|
-|senão | * multiplicação|
-|fim | / divisão|
-|repita | = igualdade|
-|flutuante | , vírgula|
-|retorna | := atribuição|
-|até | < menor|
-|leia | > maior|
-|escreva | <= menor-igual|
-|inteiro | >= maior-igual|
-| | ( abre-par|
-| | ( fecha-par|
-| | : dois-pontos|
-| | [ abre-col|
-| | ] fecha-col|
-| | && e-logico|
-| | \|\| ou-logico|
-| | ! negação|
+|se | identificador|
+|então | número inteiro|
+|senão | número em ponto flutuante|
+|fim | número em notação científica|
+|repita | igualdade|
+|flutuante | diferença|
+|retorna | ou lógico|
+|até | e lógico|
+|leia | negação|
+|escreva | adição|
+|inteiro | subtração|
+| | multiplicação|
+| | divisão|
+| | menor que|
+| | maior que|
+| | abre parenteses|
+| | fecha parenteses|
+| | abre colchetes|
+| | fecha colchetes|
+| | virgula|
+| | dois pontos|
+| | atribuição|
 	
 </div>
+<h5 align="center"> Tabela 1. Tabela contendo todos os possíveis tipos de tokens reconhecidos pela linguagem T++</h5>
 
-## How To Use
+Na tabela 1 pode-se observar que as palavras reservadas da linguagem estão à esquerda da figura e representam exatamente o lexema usado no código, diferentemente dos tokens dispostos a direita, descritos dessa forma textualmente, mas no código são representados por símbolos diferentes.
 
-To clone and run this application, you'll need [Git](https://git-scm.com) and [Node.js](https://nodejs.org/en/download/) (which comes with [npm](http://npmjs.com)) installed on your computer. From your command line:
+### 3. DFA: Autômatos Finitos Determinísticos
 
-```bash
-# Clone this repository
-$ git clone https://github.com/amitmerchant1990/electron-markdownify
+Assim como a todas as linguagens livre de contexto, os lexemas usados pela linguagem podem ser descritos de uma maneira formal por meio de dispositivos formais tais como os autômatos finitos.
 
-# Go into the repository
-$ cd electron-markdownify
+Um automato finito é composto por um conjunto de estados, um conjunto de símbolos reconhecidos pela linguagem, um conjunto de transições responsáveis por ligar os estados mutualmente, o estado inicial do automato e um conjunto de possíveis estados finais.
 
-# Install dependencies
-$ npm install
+O estado inicial do automato é marcado com um triangulo na lateral esquerda,  os possíveis estados finais são denotados com um círculo na sua borda, além de seu rótolo que identifica o estado. As transições são identificadas pelos símbolos ou classe de símbolos (ex: letra) que possibilitam a troca de estados no automato, como pode ser visto na figura 1.
 
-# Run the app
-$ npm start
-```
+<img src="https://i.imgur.com/qaagE7a.png" alt="Markdownify" width="600">
+<h5 align="center"> Figura 1. Exemplo de automato que representa formalmente a identificação da linguagem responsavel por ”reconhecer” um número de ponto flutuante</h5>
 
-> **Note**
-> If you're using Linux Bash for Windows, [see this guide](https://www.howtogeek.com/261575/how-to-run-graphical-linux-desktop-applications-from-windows-10s-bash-shell/) or use `node` from the command prompt.
+Os autômatos têm uma forte ligação com as expressões regulares empregadas a cada tipo de lexema encontrado no código. As expressões regulares serão explicadas e exemplificadas na seção 4, onde serão abordados também assuntos com relação à aplicação dos autômatos e expressões regulares no reconhecimento desses lexemas.
 
+Os autômatos servem, nesse caso, somente para formalizar as ”linguagens” livre de contexto reconhecidas no código, cada estado final de um automato ”reconhece” ou identifica os lexemas individualmente no texto, portanto não seria a abordagem adequada para este caso, já que a entrada para o lexer e um texto contendo vários lexemas.
 
-## Download
+### 4. Implementação
 
-You can [download](https://github.com/amitmerchant1990/electron-markdownify/releases/tag/v1.2.0) the latest installable version of Markdownify for Windows, macOS and Linux.
+A implementação feita para esta etapa consiste na definição das expressões regulares, usadas para identificar os lexemas no texto de entrada, reconhecimento de possíveis erros (que se limitam nessa etapa a símbolos que não são reconhecidos pela linguagem de programação que o compilador está sendo desenvolvido) e o retorno de uma lista de tokens e seus respectivos lexemas reconhecidos do texto.
 
-## Emailware
+Todo o projeto foi desenvolvido na linguagem de programação Python com o auxílio da biblioteca PLY, uma biblioteca que auxilia no uso de ferramentas de parser de textos.
 
-Markdownify is an [emailware](https://en.wiktionary.org/wiki/emailware). Meaning, if you liked using this app or it has helped you in any way, I'd like you send me an email at <bullredeyes@gmail.com> about anything you'd want to say about this software. I'd really appreciate it!
+O texto é analisado pela biblioteca token por token até que a entrada de texto termine, assim quando passado um arquivo-fonte com o código na linguagem, todo ele e examinado para que se obtenha os tokens retirados do mesmo. Um novo token é buscado a cada um já encontrado, desde que o texto ainda possua símbolos válidos. 
 
-## Credits
+#### 4.1. Expressões Regulares
 
-This software uses the following open source packages:
+As expressões regulares têm o propósito de identificar padrões textuais a partir de uma entrada, sendo assim possíveis identificar textos e símbolos que seriam muito difíceis de serem identificados com a leitura humana do texto ou que demandaria muito tempo para que isso ocorresse.
 
-- [Electron](http://electron.atom.io/)
-- [Node.js](https://nodejs.org/)
-- [Marked - a markdown parser](https://github.com/chjj/marked)
-- [showdown](http://showdownjs.github.io/showdown/)
-- [CodeMirror](http://codemirror.net/)
-- Emojis are taken from [here](https://github.com/arvida/emoji-cheat-sheet.com)
-- [highlight.js](https://highlightjs.org/)
+<img  align="center" src="https://i.imgur.com/JNvJ1nU.png" alt="Markdownify" width="600">
+<h5 align="center"> Figura 2. Exemplo de expressao regular que identifica um ponto flutuante no texto de entrada</h5>
 
-## Related
+#### 4.2. PLY
 
-[markdownify-web](https://github.com/amitmerchant1990/markdownify-web) - Web version of Markdownify
+A biblioteca PLY possui um procedimento específico quando se trata de reconhecer tokens de um texto, é necessário definir o token em uma lista e definir uma variável ou função com o nome do token e um prefixo t que definem a expressão regular desse token, como na figura 4.
 
-## Support
+### 5. Exemplos
 
-<a href="https://www.buymeacoffee.com/5Zn8Xh3l9" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/purple_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
-
-<p>Or</p> 
-
-<a href="https://www.patreon.com/amitmerchant">
-	<img src="https://c5.patreon.com/external/logo/become_a_patron_button@2x.png" width="160">
-</a>
-
-## You may also like...
-
-- [Pomolectron](https://github.com/amitmerchant1990/pomolectron) - A pomodoro app
-- [Correo](https://github.com/amitmerchant1990/correo) - A menubar/taskbar Gmail App for Windows and macOS
-
-## License
-
-MIT
-
----
-
-> [amitmerchant.com](https://www.amitmerchant.com) &nbsp;&middot;&nbsp;
-> GitHub [@amitmerchant1990](https://github.com/amitmerchant1990) &nbsp;&middot;&nbsp;
-> Twitter [@amit_merchant](https://twitter.com/amit_merchant)
-
+Na figura 5 e 6 são mostrados alguns exemplos de entradas de texto na linguagem T++ e seus respectivos resultados após analise léxica aplicada na entrada.
+ 
