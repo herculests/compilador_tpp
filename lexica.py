@@ -5,10 +5,10 @@ import ply.lex as lex
 from ply.lex import TOKEN
 
 logging.basicConfig(
-     level = logging.DEBUG,
-     filename = "log.txt",
-     filemode = "w",
-     format = "%(filename)10s:%(lineno)4d:%(message)s"
+    level = logging.DEBUG,
+    filename = "log.txt",
+    filemode = "w",
+    format = "%(filename)10s:%(lineno)4d:%(message)s"
 )
 log = logging.getLogger()
 
@@ -22,18 +22,18 @@ tokens = [
     # operadores binarios
     "MAIS",  # +
     "MENOS",  # -
-    "VEZES",  # *
-    "DIVIDE",  # /
-    "E",  # &&
-    "OU",  # ||
-    "DIFERENTE",  # <>
+    "MULTIPLICACAO",  # *
+    "DIVISAO",  # /
+    "E_LOGICO",  # &&
+    "OU_LOGICO",  # ||
+    "DIFERENCA",  # <>
     "MENOR_IGUAL",  # <=
     "MAIOR_IGUAL",  # >=
     "MENOR",  # <
     "MAIOR",  # >
     "IGUAL",  # =
     # operadores unarios
-    "NAO",  # !
+    "NEGACAO",  # !
     # simbolos
     "ABRE_PARENTESE",  # (
     "FECHA_PARENTESE",  # )
@@ -42,7 +42,7 @@ tokens = [
     "VIRGULA",  # ,
     "DOIS_PONTOS",  # :
     "ATRIBUICAO",  # :=
-    # 'COMENTARIO', # {***}
+    'COMENTARIO', # {***}
 ]
 
 reserved_words = {
@@ -79,11 +79,11 @@ inteiro = r"\d+"
 flutuante = (
     # r"(" + digito + r"+\." + digito + r"+?)"
     # (([-\+]?)([0-9]+)\.([0-9]+))'
-    r'\d+[eE][-+]?\d+|(\.\d+|\d+\.\d*)([eE][-+]?\d+)?'
+    # r'\d+[eE][-+]?\d+|(\.\d+|\d+\.\d*)([eE][-+]?\d+)?'
     # r'[-+]?[0-9]+(\.([0-9]+)?)'
     #r'[+-]?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?'
-    #r"(([-\+]?)([0-9]+)\.([0-9]+))"
-    )
+    r"(([-\+]?)([0-9]+)\.([0-9]+))"
+)
 
 notacao_cientifica = (
     r"(" + sinal + r"([1-9])\." + digito + r"+[eE]" + sinal + digito + r"+)"
@@ -93,8 +93,8 @@ notacao_cientifica = (
 # Símbolos.
 t_MAIS = r'\+'
 t_MENOS = r'-'
-t_VEZES = r'\*'
-t_DIVIDE = r'/'
+t_MULTIPLICACAO = r'\*'
+t_DIVISAO = r'/'
 t_ABRE_PARENTESE = r'\('
 t_FECHA_PARENTESE = r'\)'
 t_ABRE_COLCHETE = r'\['
@@ -104,12 +104,12 @@ t_ATRIBUICAO = r':='
 t_DOIS_PONTOS = r':'
 
 # Operadores Lógicos.
-t_E = r'&&'
-t_OU = r'\|\|'
-t_NAO = r'!'
+t_E_LOGICO = r'&&'
+t_OU_LOGICO = r'\|\|'
+t_NEGACAO = r'!'
 
 # Operadores Relacionais.
-t_DIFERENTE = r'<>'
+t_DIFERENCA = r'<>'
 t_MENOR_IGUAL = r'<='
 t_MAIOR_IGUAL = r'>='
 t_MENOR = r'<'
@@ -145,10 +145,10 @@ t_ignore = " \t"
 def t_COMENTARIO(token):
     r"(\{((.|\n)*?)\})"
     token.lexer.lineno += token.value.count("\n")
-    # return token
+    return token
 
 def t_newline(token):
-    r"\n+"
+    r"\n+" 
     token.lexer.lineno += len(token.value)
 
 def define_column(input, lexpos):
@@ -157,13 +157,11 @@ def define_column(input, lexpos):
 
 def t_error(token):
 
-    # file = token.lexer.filename
     line = token.lineno
-    # column = define_column(token.lexer.backup_data, token.lexpos)
+    column = define_column(token.lexer.lexdata, token.lexpos)
     message = "Caracter ilegal '%s'" % token.value[0]
 
-    # print(f"[{file}]:[{line},{column}]: {message}.") 
-    print(message)
+    print(f"[{line},{column}]: {message}.") 
 
     token.lexer.skip(1)
 
@@ -181,13 +179,11 @@ def main():
 
     # Tokenize
     while True:
-      tok = lexer.token()
-      if not tok: 
-        break      # No more input
-      
-    #   print(tok)
-      print(tok.type)
-    #   print(tok.value)
+        tok = lexer.token() 
+        if not tok: 
+            break      # No more input
+
+        print(tok.type)
 
 lexer = lex.lex(debug=True,debuglog=log)
 
