@@ -110,6 +110,7 @@ Na figura 4 e 5 são mostrados alguns exemplos de entradas de texto na linguagem
 </div>
 <h5 align="center"> Figura 4. Exemplo simples de entrada e sa´ıda (I)</h5>
 
+
 <div align="center">
 <img src="https://i.imgur.com/QMBAHDw.png" alt="Markdownify" width="500">
 </div>
