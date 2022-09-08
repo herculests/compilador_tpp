@@ -1,5 +1,5 @@
 <h4 align="center">Departamento Academido de Computação - Universidade Tecnológica Federal do Paraná (UTFPR)</h4>
-<h5 align="center">Caixa Postal 87301 – Campo Mourao – PR – Brasil</h5>
+<h5 align="center">Campo Mourao – PR – Brasil</h5>
 <div align="center">henriquesantos@alunos.utfpr.edu.br</div>
 
 <h1 align="center">
