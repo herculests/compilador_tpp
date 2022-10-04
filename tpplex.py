@@ -1,4 +1,4 @@
-from sys import argv, exit
+from sys import argv
 import logging
 
 import ply.lex as lex
@@ -20,20 +20,20 @@ tokens = [
     "NUM_PONTO_FLUTUANTE",  # ponto flutuate
     "NUM_INTEIRO",  # inteiro
     # operadores binarios
-    "MAIS",  # +
+    "MAIS", # +
     "MENOS",  # -
-    "MULTIPLICACAO",  # *
-    "DIVISAO",  # /
-    "E_LOGICO",  # &&
-    "OU_LOGICO",  # ||
-    "DIFERENCA",  # <>
+    "VEZES",
+    "DIVIDE",  # /
+    "E",  # &&
+    "OU",  # ||
+    "DIFERENTE",  # <>
     "MENOR_IGUAL",  # <=
     "MAIOR_IGUAL",  # >=
     "MENOR",  # <
     "MAIOR",  # >
     "IGUAL",  # =
     # operadores unarios
-    "NEGACAO",  # !
+    "NAO",  # !
     # simbolos
     "ABRE_PARENTESE",  # (
     "FECHA_PARENTESE",  # )
@@ -77,24 +77,19 @@ id = (
 inteiro = r"\d+"
 
 flutuante = (
-    # r"(" + digito + r"+\." + digito + r"+?)"
-    # (([-\+]?)([0-9]+)\.([0-9]+))'
-    r'\d+[eE][-+]?\d+|(\.\d+|\d+\.\d*)([eE][-+]?\d+)?'
-    #r'[-+]?[0-9]+(\.([0-9]+)?)'
-    #r'[+-]?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?'
-    #r"(([-\+]?)([0-9]+)\.([0-9]+))"
+    r"(([-\+]?)([0-9]+)\.([0-9]+))"
 )
 
 notacao_cientifica = (
     r"(" + sinal + r"([1-9])\." + digito + r"+[eE]" + sinal + digito + r"+)"
 )  # o mesmo que '(([-\+]?)([1-9])\.([0-9])+[eE]([-\+]?)([0-9]+))'
 
-# Expressões Regulaes para tokens simples.
+# Expressões Regulares para tokens simples
 # Símbolos.
 t_MAIS = r'\+'
 t_MENOS = r'-'
-t_MULTIPLICACAO = r'\*'
-t_DIVISAO = r'/'
+t_VEZES = r'\*'
+t_DIVIDE = r'/'
 t_ABRE_PARENTESE = r'\('
 t_FECHA_PARENTESE = r'\)'
 t_ABRE_COLCHETE = r'\['
@@ -104,12 +99,12 @@ t_ATRIBUICAO = r':='
 t_DOIS_PONTOS = r':'
 
 # Operadores Lógicos.
-t_E_LOGICO = r'&&'
-t_OU_LOGICO = r'\|\|'
-t_NEGACAO = r'!'
+t_E = r'&&'
+t_OU = r'\|\|'
+t_NAO = r'!'
 
 # Operadores Relacionais.
-t_DIFERENCA = r'<>'
+t_DIFERENTE = r'<>'
 t_MENOR_IGUAL = r'<='
 t_MAIOR_IGUAL = r'>='
 t_MENOR = r'<'
@@ -120,7 +115,8 @@ t_IGUAL = r'='
 def t_ID(token):
     token.type = reserved_words.get(
         token.value, "ID"
-    )  # não é necessário fazer regras/regex para cada palavra reservada
+    )  
+    # não é necessário fazer regras/regex para cada palavra reservada
     # se o token não for uma palavra reservada automaticamente é um id
     # As palavras reservadas têm precedências sobre os ids
 
@@ -145,7 +141,7 @@ t_ignore = " \t"
 def t_COMENTARIO(token):
     r"(\{((.|\n)*?)\})"
     token.lexer.lineno += token.value.count("\n")
-    return
+    
     # return token
 
 def t_newline(token):
@@ -159,11 +155,12 @@ def define_column(input, lexpos):
 def t_error(token):
 
     line = token.lineno
-    column = define_column(token.lexer.lexdata, token.lexpos)
-    message = "Caracter inválido '%s'" % token.value[0]
-    print(message)
+    column = define_column(token.lexer.lexdata, # código do programa
+                           token.lexpos) # posição atual do lexer
+    
+    message = "Caracter ilegal '%s'" % token.value[0]
 
-    # print(f"[{line},{column}]: {message}.") 
+    print(f"Erro na seguinte linha/coluna: [{line},{column}]: {message}")
 
     token.lexer.skip(1)
 
@@ -179,15 +176,16 @@ def main():
     source_file = data.read()
     lexer.input(source_file)
 
-    # Tokenize
+    lista_tokens = ''
     while True:
         tok = lexer.token() 
         if not tok: 
             break      # No more input
 
-        print(tok.type)
+        lista_tokens = lista_tokens + f"{tok.type}" + "\n"
+        print(f"{tok.type}")
 
-lexer = lex.lex(debug=True,debuglog=log)
+lexer = lex.lex(optimize=True,debug=True,debuglog=log)
 
 if __name__ == "__main__":
     main()

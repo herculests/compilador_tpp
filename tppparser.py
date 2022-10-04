@@ -1,12 +1,12 @@
-from sys import argv, exit
+from sys import argv
 
 import logging
 
 logging.basicConfig(
-     level = logging.DEBUG,
-     filename = "log-parser.txt",
-     filemode = "w",
-     format = "%(filename)10s:%(lineno)4d:%(message)s"
+    level = logging.DEBUG,
+    filename = "log-parser.txt",
+    filemode = "w",
+    format = "%(filename)10s:%(lineno)4d:%(message)s"
 )
 log = logging.getLogger()
 
@@ -20,6 +20,7 @@ from mytree import MyNode
 from anytree.exporter import DotExporter, UniqueDotExporter
 from anytree import RenderTree, AsciiStyle
 
+root = None
 # Sub-árvore.
 #       (programa)
 #           |
@@ -32,11 +33,10 @@ def p_programa(p):
 
     global root
 
-    programa = MyNode(name='programa', type='PROGRAMA')
+    programa = MyNode(name='programa', type='PROGRAMA', children=[p[1]])
 
     root = programa
     p[0] = programa
-    p[1].parent = programa
 
 #    (lista_declaracoes)                          (lista_declaracoes)
 #          /           \                                    |
@@ -98,6 +98,21 @@ def p_declaracao_variaveis(p):
 #              |
 #         (atribuicao)
 
+def p_declaracao_variaveis_error(p):
+    """declaracao_variaveis : error DOIS_PONTOS lista_variaveis
+                                | tipo DOIS_PONTOS error"""
+                                
+    print("Erro na declaração das variáveis.")
+
+    error_line = p.lineno(2)
+    
+    pai = MyNode(name='ERROR::{}'.format(error_line), type='ERROR')
+    logging.error(
+        "Syntax error parsing index rule at line {}".format(error_line))
+    
+    parser.errok()
+    
+    p[0] = pai
 
 def p_inicializacao_variaveis(p):
     """inicializacao_variaveis : atribuicao"""
@@ -177,11 +192,11 @@ def p_indice_error(p):
     print("Erro:p[0]:{p0}, p[1]:{p1}, p[2]:{p2}, p[3]:{p3}".format(
         p0=p[0], p1=p[1], p2=p[2], p3=p[3]))
     error_line = p.lineno(2)
-    father = MyNode(name='ERROR::{}'.format(error_line), type='ERROR')
+    pai = MyNode(name='ERROR::{}'.format(error_line), type='ERROR')
     logging.error(
         "Syntax error parsing index rule at line {}".format(error_line))
     parser.errok()
-    p[0] = father
+    p[0] = pai
     # if len(p) == 4:
     #     p[1] = new_node('ABRECOLCHETES', father)
     #     p[2].parent = father
@@ -226,6 +241,23 @@ def p_declaracao_funcao(p):
     if len(p) == 3:
         p[2].parent = pai
 
+def p_declaracao_funcao_error(p):
+    """declaracao_funcao : error cabecalho
+                        | tipo error
+    """
+
+    print("Erro na declaração da funcao.")
+    
+    error_line = p.lineno(2)
+
+    pai = MyNode(name='ERROR::{}'.format(error_line), type='ERROR')
+    
+    logging.error(
+        "Syntax error parsing index rule at line {}".format(error_line))
+
+    parser.errok()
+
+    p[0] = pai
 
 def p_cabecalho(p):
     """cabecalho : ID ABRE_PARENTESE lista_parametros FECHA_PARENTESE corpo FIM"""
@@ -259,6 +291,19 @@ def p_cabecalho_error(p):
                 | ID ABRE_PARENTESE lista_parametros FECHA_PARENTESE error FIM
                 | error ABRE_PARENTESE lista_parametros FECHA_PARENTESE corpo FIM 
     """
+
+    print("Erro na definicao do cabecalho.")
+    
+    error_line = p.lineno(2)
+
+    pai = MyNode(name='ERROR::{}'.format(error_line), type='ERROR')
+    
+    logging.error(
+        "Syntax error parsing index rule at line {}".format(error_line))
+
+    parser.errok()
+
+    p[0] = pai
 
 def p_lista_parametros(p):
     """lista_parametros : lista_parametros VIRGULA parametro
@@ -310,6 +355,22 @@ def p_parametro_error(p):
                 | parametro ABRE_COLCHETE error
     """
 
+    print("Erro na definicao dos parâmetros.")
+
+    if len(p) > 3:
+        print("Erro:p[0]:{p0}, p[1]:{p1}, p[2]:{p2}, p[3]:{p3}".format(
+            p0=p[0], p1=p[1], p2=p[2], p3=p[3]))
+    else:
+        print("Erro:p[0]:{p0}, p[1]:{p1}, p[2]:{p2}".format(
+            p0=p[0], p1=p[1], p2=p[2]))
+
+    error_line = p.lineno(2)
+    
+    pai = MyNode(name='ERROR::{}'.format(error_line), type='ERROR')
+    logging.error(
+        "Syntax error parsing index rule at line {}".format(error_line))
+    parser.errok()
+    p[0] = pai
 
 def p_corpo(p):
     """corpo : corpo acao
@@ -392,6 +453,18 @@ def p_se_error(p):
         | SE expressao ENTAO corpo SENAO corpo
     """
 
+    print("Erro na definicao da condicional.")
+    
+    error_line = p.lineno(2)
+    
+    pai = MyNode(name='ERROR::{}'.format(error_line), type='ERROR')
+    
+    logging.error(
+        "Syntax error parsing index rule at line {}".format(error_line))
+
+    parser.errok()
+
+    p[0] = pai
 
 def p_repita(p):
     """repita : REPITA corpo ATE expressao"""
@@ -413,9 +486,20 @@ def p_repita(p):
 
 
 def p_repita_error(p):
-    """repita : error corpo ATE expressao
-            | REPITA corpo error expressao
-    """
+    """repita : error corpo ATE expressao"""
+
+    print("Erro na definicao do repita.")
+    
+    error_line = p.lineno(2)
+
+    pai = MyNode(name='ERROR::{}'.format(error_line), type='ERROR')
+    
+    logging.error(
+        "Syntax error parsing index rule at line {}".format(error_line))
+
+    parser.errok()
+
+    p[0] = pai
 
 def p_atribuicao(p):
     """atribuicao : var ATRIBUICAO expressao"""
@@ -430,6 +514,23 @@ def p_atribuicao(p):
     p[2] = filho2
 
     p[3].parent = pai
+    
+def p_atribuicao_error(p):
+    """atribuicao : var ATRIBUICAO error
+                    | error ATRIBUICAO expressao"""
+                    
+    print("Erro na definicao da atribuição.")
+    
+    error_line = p.lineno(2)
+
+    pai = MyNode(name='ERROR::{}'.format(error_line), type='ERROR')
+    
+    logging.error(
+        "Syntax error parsing index rule at line {}".format(error_line))
+
+    parser.errok()
+
+    p[0] = pai
 
 
 def p_leia(p):
@@ -457,6 +558,18 @@ def p_leia_error(p):
     """leia : LEIA ABRE_PARENTESE error FECHA_PARENTESE
     """
 
+    print("Erro na definicao do leia.")
+    
+    error_line = p.lineno(2)
+
+    pai = MyNode(name='ERROR::{}'.format(error_line), type='ERROR')
+    
+    logging.error(
+        "Syntax error parsing index rule at line {}".format(error_line))
+
+    parser.errok()
+
+    p[0] = pai
 
 def p_escreva(p):
     """escreva : ESCREVA ABRE_PARENTESE expressao FECHA_PARENTESE"""
@@ -477,7 +590,23 @@ def p_escreva(p):
     filho4 = MyNode(name='FECHA_PARENTESE', type='FECHA_PARENTESE', parent=pai)
     filho_sym4 = MyNode(name=')', type='SIMBOLO', parent=filho4)
     p[4] = filho4
+    
+def p_escreva_error(p):
+    """escreva : ESCREVA ABRE_PARENTESE error FECHA_PARENTESE
+    """
 
+    print("Erro na definicao do escreva.")
+    
+    error_line = p.lineno(2)
+
+    pai = MyNode(name='ERROR::{}'.format(error_line), type='ERROR')
+    
+    logging.error(
+        "Syntax error parsing index rule at line {}".format(error_line))
+
+    parser.errok()
+
+    p[0] = pai
 
 def p_retorna(p):
     """retorna : RETORNA ABRE_PARENTESE expressao FECHA_PARENTESE"""
@@ -499,6 +628,21 @@ def p_retorna(p):
     filho_sym4 = MyNode(name=')', type='SIMBOLO', parent=filho4)
     p[4] = filho4
 
+def p_retorna_error(p):
+    """retorna : RETORNA ABRE_PARENTESE error FECHA_PARENTESE"""
+    
+    print("Erro na definicao do retorna.")
+    
+    error_line = p.lineno(2)
+
+    pai = MyNode(name='ERROR::{}'.format(error_line), type='ERROR')
+    
+    logging.error(
+        "Syntax error parsing index rule at line {}".format(error_line))
+
+    parser.errok()
+
+    p[0] = pai
 
 def p_expressao(p):
     """expressao : expressao_logica
@@ -668,15 +812,11 @@ def p_operador_multiplicacao(p):
                             | DIVIDE
         """
     if p[1] == "*":
-        filho = MyNode(name='VEZES', type='VEZES')
-        vezes_lexema = MyNode(name=p[1], type='SIMBOLO', parent=filho)
-        p[0] = MyNode(name='operador_multiplicacao',
-                      type='OPERADOR_MULTIPLICACAO', children=[filho])
+        vezes = MyNode(name=p[1], type='VEZES')
+        p[0] = vezes
     else:
-       divide = MyNode(name='DIVIDE', type='DIVIDE')
-       divide_lexema = MyNode(name=p[1], type='SIMBOLO', parent=divide)
-       p[0] = MyNode(name='operador_multiplicacao',
-                     type='OPERADOR_MULTIPLICACAO', children=[divide])
+       divide = MyNode(name=p[1], type='SIMBOLO')
+       p[0] = divide
 
 
 def p_fator(p):
@@ -705,6 +845,19 @@ def p_fator_error(p):
     """fator : ABRE_PARENTESE error FECHA_PARENTESE
         """
 
+    print("Erro na definicao do fator.")
+    
+    error_line = p.lineno(2)
+
+    pai = MyNode(name='ERROR::{}'.format(error_line), type='ERROR')
+    
+    logging.error(
+        "Syntax error parsing index rule at line {}".format(error_line))
+
+    parser.errok()
+
+    p[0] = pai
+
 def p_numero(p):
     """numero : NUM_INTEIRO
                 | NUM_PONTO_FLUTUANTE
@@ -720,12 +873,12 @@ def p_numero(p):
         p[1] = aux
     elif str(p[1]).find('e') >= 0:
         aux = MyNode(name='NUM_NOTACAO_CIENTIFICA',
-                     type='NUM_NOTACAO_CIENTIFICA', parent=pai)
+                    type='NUM_NOTACAO_CIENTIFICA', parent=pai)
         aux_val = MyNode(name=p[1], type='VALOR', parent=aux)
         p[1] = aux
     else:
         aux = MyNode(name='NUM_PONTO_FLUTUANTE',
-                     type='NUM_PONTO_FLUTUANTE', parent=pai)
+                    type='NUM_PONTO_FLUTUANTE', parent=pai)
         aux_val = MyNode(name=p[1], type='VALOR', parent=aux)
         p[1] = aux
 
@@ -810,10 +963,10 @@ def main():
         print("Graph was generated.\nOutput file: " + argv[1] + ".ast.png")
 
         DotExporter(root, graph="graph",
-                    nodenamefunc=MyNode.nodenamefunc,
-                    nodeattrfunc=lambda node: 'label=%s' % (node.type),
-                    edgeattrfunc=MyNode.edgeattrfunc,
-                    edgetypefunc=MyNode.edgetypefunc).to_picture(argv[1] + ".ast2.png")
+            nodenamefunc=MyNode.nodenamefunc,
+            nodeattrfunc=lambda node: 'label=%s' % (node.type),
+            edgeattrfunc=MyNode.edgeattrfunc,
+            edgetypefunc=MyNode.edgetypefunc).to_picture(argv[1] + ".ast2.png")
 
         # DotExporter(root, nodenamefunc=lambda node: node.label).to_picture(argv[1] + ".ast3.png")
 
