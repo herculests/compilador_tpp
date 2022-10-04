@@ -14,7 +14,7 @@
 
 ## Análise Léxica
 
-### 1. Introducção
+### 1. Introdução
 
 A análise léxica é a primeira etapa do processo de compilação de um código-fonte, nessa fase do processo o código é examinado e apartir disso são gerados tokens que representam cada lexema presente no ”texto”. Os tokens são definidos pela linguagem e fazem parte do modo de escrever empregado na mesma.
 
@@ -108,10 +108,28 @@ Na figura 4 e 5 são mostrados alguns exemplos de entradas de texto na linguagem
  <div align="center">
 <img src="https://i.imgur.com/nq9QS4o.png" alt="Markdownify" width="500">
 </div>
-<h5 align="center"> Figura 4. Exemplo simples de entrada e sa´ıda (I)</h5>
+<h5 align="center"> Figura 4. Exemplo simples de entrada e saída (I)</h5>
 
 
 <div align="center">
 <img src="https://i.imgur.com/QMBAHDw.png" alt="Markdownify" width="500">
 </div>
-<h5 align="center"> Figura 5. Exemplo simples de entrada e sa´ıda (II)</h5>
+<h5 align="center"> Figura 5. Exemplo simples de entrada e saída (II)</h5>
+
+## Análise Sintática
+
+### 1. Introdução
+
+A análise sintática é uma técnica de análise de texto que visa identificar e classificar as estruturas sintáticas de um determinado texto. Essa técnica é muito útil para a compreensão de um texto, uma vez que ajuda a identificar as relações entre as palavras e as frases. Além disso, a análise sintática também pode ser útil para a tradução de um texto, já que ela permite identificar as estruturas sintáticas de um texto e, assim, facilitar a sua tradução para outro idioma.
+
+### 2. Discussão sobre o formato na Análise Sintática realizado pela ferramenta (se é LL(1), LR(1), LALR(1), SLR(1), etc).
+
+### 3. Gramática no padrão BNF.
+
+### 4. Implementação
+
+#### 4.1. Yacc
+
+#### 4.2 Árvore Sintática
+
+### 5. Exemplos
