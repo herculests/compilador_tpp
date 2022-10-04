@@ -149,32 +149,37 @@ O Yacc é uma ferramenta do python para facilitar na criação e na utilização
  
 A primeira etapa que precisa ser feita para utilizar o Yacc e importar suas bibliotecas que podem ser vistas abaixo:
 
+~~~python
 import ply.yacc as yacc
-import lexica
-from anytree import Node, RenderTree
-from anytree.exporter import DotExporter
-tokens = lexica.tokens
+from tpplex import tokens,log
+from anytree.exporter import DotExporter, UniqueDotExporter
+from anytree import RenderTree, AsciiStyle
+~~~
  
 Nelas, além do ply.yacc que e a biblioteca padrão para geração de código, temos também mais duas coisas que precisam ser importadas, uma biblioteca de geração de código chamada anytree além de toda a parte léxica que já foi criada e explicada nos capítulos anteriores, para ser possível acessar os Tokens gerados anteriormente.
  
 Após isso devemos criar funções que irão gerar a gramática BNF da linguagem, um exemplo dessas funções pode ser visto abaixo:
 
+~~~python
 def p_programa(p):
     """programa : lista_declaracoes"""
     global root 
     programa = MyNode(name='programa', type='PROGRAMA', children=[p[1]])
     root = programa
     p[0] = programa
+~~~
  
 Como podemos observar, estas funções possuem o seguinte escopo, o nome da função primeiramente deve conter um p_ acompanhado de um nome, que será o nome dado a regra que irá ser criada na gramática, e como parâmetro dessa função se passa a palavra a ser verificada, logo em seguida temos a regra que deve ser tratada em formato de string, a primeira palavra dessa regra deve ser exatamente o nome dado a regra BNF, e depois dos ”:” vem a regra em si (neste exemplo o nome e programa, e a regra e lista declarações), se esta regra for um conjunto final, então a frase é aceita e retorna ali, se for uma função ela continuará entrando até encontrar um final ou um erro. Além disso, também temos a parte de geração da árvore, ela utiliza da biblioteca anytree como já especificado acima e cria nós para cada interação nesta função onde este nó possui um nome e um filho que será dado quando esta função retornar da lista de declarações.
  
 Existem algumas funções que possuem diferenças das demais, umas delas é a p_error:
 
+~~~python
 def p_error(p):
     if p:
         token = p
         print("Erro:[{line},{column}]: Erro próximo ao token '{token}'".format(
             line=token.lineno, column=token.lineno, token=token.value))
+~~~
  
 Elas é específica para tratamento de erros, onde fica responsável por se algum erro for encontrado ele imprime o Token, a linha e a coluna deste erro. 
  
@@ -190,3 +195,30 @@ Com todos os passos realizados a árvore gerada irá ser como a da imagem.
 Nela podemos visualizar os nós gerados e os seus caminhos, além também de uma prova visual do bottom-up, pois os identificadores como já citado nas sessões anteriores no nó mais à esquerda de todos, e mais abaixo e terminam no nó raiz.
 
 ### 5. Exemplos
+
+Aqui podemos ver um exemplo da geração utilizando o código para identificar primos
+
+Código em tpp
+~~~python
+inteiro principal()
+	inteiro: digitado
+	inteiro: i
+	i := 1
+	repita
+		flutuante: f
+		inteiro: int
+		flutuante: resultado
+		f := i/2.
+		int := i/2
+		resultado := f - int
+		
+		se  resultado > 0
+			escreva (i)
+		fim
+		i := i+1
+	até i <= digitado
+fim
+~~~
+
+Arvore gerada:
+<img src="https://i.imgur.com/JOgDF9P.png" alt="Markdownify">
