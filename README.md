@@ -120,16 +120,73 @@ Na figura 4 e 5 são mostrados alguns exemplos de entradas de texto na linguagem
 
 ### 1. Introdução
 
-A análise sintática é uma técnica de análise de texto que visa identificar e classificar as estruturas sintáticas de um determinado texto. Essa técnica é muito útil para a compreensão de um texto, uma vez que ajuda a identificar as relações entre as palavras e as frases. Além disso, a análise sintática também pode ser útil para a tradução de um texto, já que ela permite identificar as estruturas sintáticas de um texto e, assim, facilitar a sua tradução para outro idioma.
+A análise sintática é uma técnica de análise de texto que visa identificar e classificar as estruturas sintáticas de um determinado texto. Essa técnica é muito útil para a compreensão de um texto, uma vez que ajuda a identificar as relações entre as palavras e as frases.
 
-### 2. Discussão sobre o formato na Análise Sintática realizado pela ferramenta (se é LL(1), LR(1), LALR(1), SLR(1), etc).
+Esta seção relata todos os pontos para a criação da parte sintática do compilador, mostrando o que é a gramática BNF, como ela funciona, como o Yacc ajuda na criação da sintática e mostrando os resultados dessa etapa.
 
-### 3. Gramática no padrão BNF.
+### 2. Analise Sintática LALR.
+
+Este programa trabalha com o analisador sintático do tipo LALR (look-ahead left-right), ou seja, ele analisa as informações provenientes da gramática BNF da esquerda para a direita e de baixo para cima, tentando deduzir as análises sintáticas e gerando uma tabela de ações do próximo estado.
+
+O analisador sintático LALR é utilizado pelo fato de existirem muitos estados diferentes que possuem o mesmo conjunto de componentes, então para resolver isto ele combina esses estados e os expressa através de uma tabela LALR que é utilizada de forma mais simples e barata computacionalmente.
+
+Além desses benefícios de se utilizar o LALR também temos a vantagem de sua análise ser realizada de maneira Botton-up, ou seja, as últimas regras mais à esquerda serão as primeiras a serem geradas, para melhorar a eficiência na hora de identificar uma informação. Isto ocorre, pois é mais barato computacionalmente você identificar um token nas regras que podem gerar Tokens, e ir subindo elas até chegar nó raiz, do que partir do nó raiz e ir buscar este Token.
+
+### 3. Gramática BNF.
+
+Para que o programa consiga captar as regras da linguagem e separar os significados das palavras na mesma, além da separação dos Tokens, também se faz necessário uma separação lógica dentro da própria linguagem, e para que essa separação seja possível uma gramática livre de contexto, ou BNF, foi utilizada.
+ 
+Esta gramática consiste em um conjunto de regras que devem ser atendidas para que dado programa seja ou não aceito em uma linguagem, e que além de ser aceito também possa gerar uma árvore de recorrência para este programa que será muito útil nos próximos passos para se criar um compilador. Então, para gerar todos os possíveis caminhos dessa linguagem, as seguintes regras foram utilizadas:
+
+Estas regras partem de um S’ que será sempre o nó raiz de uma árvore que será gerada, a partir dele um autômato de pilha vai buscando novos possíveis caminhos de escolha para que o programa no final seja aceito, se o mesmo for aceito a árvore é gerada através de uma imagem, todavia se for rejeito, um erro deve ser impresso mostrando a linha e coluna que ele ocorreu.
+
 
 ### 4. Implementação
 
 #### 4.1. Yacc
 
+O Yacc é uma ferramenta do python para facilitar na criação e na utilização da gramática BNF para geração da árvore de um compilador, ela possui vários métodos para geração de código e trabalha em conjunto com o Lex da parte léxica facilitando em muito a programação como um todo.
+ 
+A primeira etapa que precisa ser feita para utilizar o Yacc e importar suas bibliotecas que podem ser vistas abaixo:
+
+import ply.yacc as yacc
+import lexica
+from anytree import Node, RenderTree
+from anytree.exporter import DotExporter
+tokens = lexica.tokens
+ 
+Nelas, além do ply.yacc que e a biblioteca padrão para geração de código, temos também mais duas coisas que precisam ser importadas, uma biblioteca de geração de código chamada anytree além de toda a parte léxica que já foi criada e explicada nos capítulos anteriores, para ser possível acessar os Tokens gerados anteriormente.
+ 
+Após isso devemos criar funções que irão gerar a gramática BNF da linguagem, um exemplo dessas funções pode ser visto abaixo:
+
+def p_programa(p):
+    """programa : lista_declaracoes"""
+    global root 
+    programa = MyNode(name='programa', type='PROGRAMA', children=[p[1]])
+    root = programa
+    p[0] = programa
+ 
+Como podemos observar, estas funções possuem o seguinte escopo, o nome da função primeiramente deve conter um p_ acompanhado de um nome, que será o nome dado a regra que irá ser criada na gramática, e como parâmetro dessa função se passa a palavra a ser verificada, logo em seguida temos a regra que deve ser tratada em formato de string, a primeira palavra dessa regra deve ser exatamente o nome dado a regra BNF, e depois dos ”:” vem a regra em si (neste exemplo o nome e programa, e a regra e lista declarações), se esta regra for um conjunto final, então a frase é aceita e retorna ali, se for uma função ela continuará entrando até encontrar um final ou um erro. Além disso, também temos a parte de geração da árvore, ela utiliza da biblioteca anytree como já especificado acima e cria nós para cada interação nesta função onde este nó possui um nome e um filho que será dado quando esta função retornar da lista de declarações.
+ 
+Existem algumas funções que possuem diferenças das demais, umas delas é a p_error:
+
+def p_error(p):
+    if p:
+        token = p
+        print("Erro:[{line},{column}]: Erro próximo ao token '{token}'".format(
+            line=token.lineno, column=token.lineno, token=token.value))
+ 
+Elas é específica para tratamento de erros, onde fica responsável por se algum erro for encontrado ele imprime o Token, a linha e a coluna deste erro. 
+ 
+E por último temos a parte de geração da árvore que irá utilizar os nós da anytree e gerar uma imagem jpg. Nela, se a função de erro não tiver sido acionada nenhuma vez, ela gera uma árvore com todos os nós e seus conteúdos.
+
+
 #### 4.2 Árvore Sintática
+
+Com todos os passos realizados a árvore gerada irá ser como a da imagem.
+
+<img src="https://i.imgur.com/LELjDzu.png" alt="Markdownify">
+
+Nela podemos visualizar os nós gerados e os seus caminhos, além também de uma prova visual do bottom-up, pois os identificadores como já citado nas sessões anteriores no nó mais à esquerda de todos, e mais abaixo e terminam no nó raiz.
 
 ### 5. Exemplos
