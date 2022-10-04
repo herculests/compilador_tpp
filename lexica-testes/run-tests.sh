@@ -9,7 +9,7 @@ LEXER=$1
 
 for f in `ls *.tpp`; do 
   echo Testing with $f
-  python $LEXER $f > $f-test.out
+  python3 $LEXER $f > $f-test.out
   diff $f-test.out $f.out > $f.diff;  
 done
 

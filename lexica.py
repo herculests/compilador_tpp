@@ -79,10 +79,10 @@ inteiro = r"\d+"
 flutuante = (
     # r"(" + digito + r"+\." + digito + r"+?)"
     # (([-\+]?)([0-9]+)\.([0-9]+))'
-    # r'\d+[eE][-+]?\d+|(\.\d+|\d+\.\d*)([eE][-+]?\d+)?'
-    # r'[-+]?[0-9]+(\.([0-9]+)?)'
+    r'\d+[eE][-+]?\d+|(\.\d+|\d+\.\d*)([eE][-+]?\d+)?'
+    #r'[-+]?[0-9]+(\.([0-9]+)?)'
     #r'[+-]?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?'
-    r"(([-\+]?)([0-9]+)\.([0-9]+))"
+    #r"(([-\+]?)([0-9]+)\.([0-9]+))"
 )
 
 notacao_cientifica = (
@@ -160,7 +160,8 @@ def t_error(token):
 
     line = token.lineno
     column = define_column(token.lexer.lexdata, token.lexpos)
-    message = "Caracter ilegal '%s'" % token.value[0]
+    message = "Caracter inválido '%s'" % token.value[0]
+    print(message)
 
     # print(f"[{line},{column}]: {message}.") 
 
