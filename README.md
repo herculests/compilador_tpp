@@ -223,7 +223,8 @@ fim
 Arvore gerada:
 <img src="https://i.imgur.com/JOgDF9P.png" alt="Markdownify">
 
-# Análise Semântica (Trabalho - 3ª parte)
+
+# Análise Semântica
 
 Tendo em mãos a árvore sintática gerada na etapa anterior, o próximo passo é implementar o analisador semântico. No entanto, para isso, antes é necessário que a árvore seja podada para que sejam removidos nós desnecessários, facilitando assim o processo de percorrer a árvore para implementar as regras semânticas.
 
