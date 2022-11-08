@@ -255,22 +255,20 @@ Após a geração da tabela de símbolos, é necessário, de fato, implementar a
 Para melhor compreensão, veja o código abaixo.
 
 ```
-flutuante: a
-inteiro: b
+inteiro: a
+flutuante: b
+inteiro: c[1.2]
 
 inteiro principal()
-  b := 18
-  a := 1.0
-
-  a := b
-  b := a
+  c[5.8] := 10
 fim
 ```
 
-Executando `python3 main.py codigo.tpp` A análise semântica deste código deve retornar os seguintes erros:
+Executando `python3 tppsemantic.py codigo.tpp` A análise semântica deste código deve retornar os seguintes erros:
 
 ```
-ERRO: Função principal deveria retornar inteiro, mas retorna vazio.
-AVISO: Atribuição de tipos distintos ’ a ’ flutuante e expressão inteiro.
-AVISO: Atribuição de tipos distintos ’ b ’ inteiro e expressão flutuante.
+Erro: índice de array 'c' não inteiro
+Aviso: Variável 'a' declarada e não utilizada
+Aviso: Variável 'b' declarada e não utilizada
+Erro: Função principal deveria retornar inteiro, mas retorna vazio
 ```
