@@ -235,11 +235,11 @@ Para realizar a poda da árvore, os seguintes nós foram considerados passíveis
 As duas imagens abaixo apresentam exemplo de árvore antes da poda e após a poda.
 
 <p align="center">
-  <img src="../images/arvore.png"/>
+  <img src="https://i.imgur.com/wduYPnH.png" alt="Markdownify"/>
 </p>
 
 <p align="center">
-  <img src="../images/arvore_podada.png"/>
+  <img src="https://i.imgur.com/HpWsazn.png" alt="Markdownify"/>
 </p>
 
 Após a poda, ela deve ser percorrida para a realização da análise sensível ao contexto e geração da tabela de símbolos.
