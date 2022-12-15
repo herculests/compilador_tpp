@@ -353,4 +353,6 @@ main.fim:
 
 No código acima, pode-se identificar a declaração da variável global ”a”, a função principal com a declaração de b, as atribuições e o retorno ao final da função. Ao executar o comando para compilar este código, e rodando o executável gerado, espera-se que a função tenha retornado o valor 10. A saı́da apresenta o seguinte resultado:
 
-
+<p align="center">
+  <img src="https://i.imgur.com/ewRRJ4U.png" alt="Markdownify"/>
+</p>
