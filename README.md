@@ -328,28 +328,26 @@ fim
 Quando o gerador de código é executado com este programa de entrada, o código intermediário gerado é o seguinte:
 
 ```
-; ModuleID = "module.bc"
+; ModuleID = "gencode-001.tpp.minimized.llvm.bc"
 target triple = "x86_64-unknown-linux-gnu"
 target datalayout = "e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-f80:128-n8:16:32:64-S128"
 
-declare void @"escrevaInteiro"(i32 %".1") 
-
-declare void @"escrevaFlutuante"(float %".1") 
-
-declare i32 @"leiaInteiro"() 
-
-declare float @"leiaFlutuante"() 
-
 @"a" = common global i32 undef, align 4
-define i32 @"main"() 
+define i32 @"main"()
 {
-entry:
+main.corpo:
   %"b" = alloca i32, align 4
-  store i32 10, i32* @"a"
+  store i32 11, i32* @"a"
   %".3" = load i32, i32* @"a"
   store i32 %".3", i32* %"b"
-  %"ret_temp" = load i32, i32* %"b", align 4
-  ret i32 %"ret_temp"
+  store i32 13, i32* %"b"
+  %".6" = load i32, i32* %"b"
+  %"main.ret" = alloca i32, align 4
+  store i32 %".6", i32* %"main.ret"
+  br label %"main.fim"
+main.fim:
+  %".9" = load i32, i32* %"main.ret", align 4
+  ret i32 %".9"
 }
 ```
 
